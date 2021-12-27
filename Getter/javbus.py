@@ -156,9 +156,9 @@ def getTag(htmlcode):  # 获取标签
     soup = BeautifulSoup(htmlcode, 'lxml')
     a = soup.find_all(attrs={'class': 'genre'})
     for i in a:
-        if 'onmouseout' in str(i):
+        if 'onmouseout' in str(i) and i.find_all('button'):
             continue
-        tag.append(i.get_text())
+        tag.append(i.get_text(strip=True))
     return tag
 
 

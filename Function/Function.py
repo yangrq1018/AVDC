@@ -50,7 +50,8 @@ def escapePath(path, Config):  # Remove escape literals
 
 
 # ========================================================================获取视频列表
-def movie_lists(escape_folder, movie_type, movie_path):
+def movie_lists(escape_folder, movie_type, movie_path, exclude=''):
+    exclude_filenames = exclude.split(',')
     if escape_folder != '':
         escape_folder = re.split('[,，]', escape_folder)
     total = []
@@ -70,12 +71,21 @@ def movie_lists(escape_folder, movie_type, movie_path):
             file_name = os.path.splitext(f)[0]
             if re.search(r'^\..+', file_name):
                 continue
+            if match_filename_regexp(f, exclude_filenames):
+                continue
             if file_type_current in file_type:
                 path = root + '/' + f
                 # path = path.replace(file_root, '.')
                 path = path.replace("\\\\", "/").replace("\\", "/")
                 total.append(path)
     return total
+
+
+def match_filename_regexp(f, regexps):
+    for regexp in regexps:
+        if re.match(regexp, f):
+            return True
+    return False
 
 
 # ========================================================================获取番号
@@ -340,6 +350,7 @@ def save_config(json_config):
         print("literals = " + json_config['literals'], file=code)
         print("folders = " + json_config['folders'], file=code)
         print("string = " + json_config['string'], file=code)
+        print("exclude = " + json_config["exclude"], file=code)
         print("", file=code)
         print("[debug_mode]", file=code)
         print("switch = " + str(json_config['switch_debug']), file=code)

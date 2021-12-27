@@ -311,6 +311,7 @@ class MyMAinWindow(QMainWindow, Ui_AVDV):
             'thumb_download': 1,
             'extrafanart_download': 0,
             'extrafanart_folder': 'extrafanart',
+            'exclude': '',
         }
         save_config(json_config)
         self.Load_Config()
@@ -388,6 +389,7 @@ class MyMAinWindow(QMainWindow, Ui_AVDV):
         self.Ui.lineEdit_escape_char.setText(config['escape']['literals'])
         self.Ui.lineEdit_escape_dir_move.setText(config['escape']['folders'])
         self.Ui.lineEdit_escape_string.setText(config['escape']['string'])
+        self.Ui.lineEdit_exclude.setText(config['escape']['exclude'])
         # ========================================================================debug_mode
         if int(config['debug_mode']['switch']) == 1:
             self.Ui.radioButton_debug_on.setChecked(True)
@@ -600,6 +602,7 @@ class MyMAinWindow(QMainWindow, Ui_AVDV):
             'literals': self.Ui.lineEdit_escape_char.text(),
             'folders': self.Ui.lineEdit_escape_dir.text(),
             'string': self.Ui.lineEdit_escape_string.text(),
+            'exclude': self.Ui.lineEdit_exclude.text(),
             'emby_url': self.Ui.lineEdit_emby_url.text(),
             'api_key': self.Ui.lineEdit_api_key.text(),
             'media_path': self.Ui.lineEdit_movie_path.text(),
@@ -1311,10 +1314,12 @@ class MyMAinWindow(QMainWindow, Ui_AVDV):
             mark_type += ',流出'
         if self.Ui.checkBox_uncensored.isChecked() and uncensored:
             mark_type += ',无码'
-        if self.Ui.radioButton_thumb_mark_on.isChecked() and mark_type != '' and self.Ui.checkBox_download_thumb.isChecked() and os.path.exists(thumb_path):
+        if self.Ui.radioButton_thumb_mark_on.isChecked() and mark_type != '' and self.Ui.checkBox_download_thumb.isChecked() and os.path.exists(
+                thumb_path):
             self.add_mark_thread(thumb_path, cn_sub, leak, uncensored)
             self.add_text_main('[+]Thumb Add Mark:    ' + mark_type.strip(','))
-        if self.Ui.radioButton_poster_mark_on.isChecked() and mark_type != '' and self.Ui.checkBox_download_poster.isChecked() and os.path.exists(poster_path):
+        if self.Ui.radioButton_poster_mark_on.isChecked() and mark_type != '' and self.Ui.checkBox_download_poster.isChecked() and os.path.exists(
+                poster_path):
             self.add_mark_thread(poster_path, cn_sub, leak, uncensored)
             self.add_text_main('[+]Poster Add Mark:   ' + mark_type.strip(','))
 
@@ -1618,7 +1623,11 @@ class MyMAinWindow(QMainWindow, Ui_AVDV):
             return
         if self.Ui.radioButton_fail_move_on.isChecked():
             self.CreatFailedFolder(failed_folder)  # 新建failed文件夹
-        movie_list = movie_lists(escape_folder, movie_type, movie_path)  # 获取所有需要刮削的影片列表
+        # 获取所有需要刮削的影片列表
+        movie_list = movie_lists(escape_folder, movie_type, movie_path, config['escape']['exclude'])
+        if len(movie_list) == 0:
+            self.add_text_main("nothing to parse")
+            return
         count = 0
         count_all = str(len(movie_list))
         self.add_text_main('[+]Find ' + count_all + ' movies')

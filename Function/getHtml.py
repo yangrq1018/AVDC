@@ -26,7 +26,7 @@ def get_proxies(proxy_type, proxy):
     if proxy == '' or proxy_type == '' or proxy_type == 'no':
         proxies = {}
     elif proxy_type == 'http':
-        proxies = {"http": "http://" + proxy, "https": "https://" + proxy}
+        proxies = {"http": "http://" + proxy, "https": "http://" + proxy}
     elif proxy_type == 'socks5':
         proxies = {"http": "socks5://" + proxy, "https": "socks5://" + proxy}
     return proxies
