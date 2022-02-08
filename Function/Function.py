@@ -5,7 +5,7 @@ import os
 import json
 from PIL import Image
 from configparser import ConfigParser
-from Getter import avsox, javbus, javdb, mgstage, dmm, jav321, xcity
+from Getter import javbus, javdb, mgstage, dmm, jav321, xcity
 
 
 # ========================================================================获取config
@@ -158,8 +158,8 @@ def getDataFromJSON(file_number, config, mode, appoint_url):  # 从JSON返回元
                 json_data = json.loads(javdb.main(file_number, appoint_url, True))
             if getDataState(json_data) == 0 and 'HEYZO' in file_number.upper():
                 json_data = json.loads(jav321.main(file_number, appoint_url, True))
-            if getDataState(json_data) == 0:
-                json_data = json.loads(avsox.main(file_number, appoint_url))
+            # if getDataState(json_data) == 0:
+            #     json_data = json.loads(avsox.main(file_number, appoint_url))
         # =======================================================================259LUXU-1111
         elif re.match('\d+[a-zA-Z]+-\d+', file_number) or 'SIRO' in file_number.upper():
             json_data = json.loads(mgstage.main(file_number, appoint_url))
@@ -190,8 +190,8 @@ def getDataFromJSON(file_number, config, mode, appoint_url):  # 从JSON返回元
                 json_data = json.loads(xcity.main(file_number, appoint_url))
             if getDataState(json_data) == 0:
                 json_data = json.loads(javdb.main(file_number, appoint_url))
-            if getDataState(json_data) == 0:
-                json_data = json.loads(avsox.main(file_number, appoint_url))
+            # if getDataState(json_data) == 0:
+            #     json_data = json.loads(avsox.main(file_number, appoint_url))
     elif re.match('\D{2,}00\d{3,}', file_number) and mode != 7:
         json_data = {
             'title': '',
@@ -214,8 +214,8 @@ def getDataFromJSON(file_number, config, mode, appoint_url):  # 从JSON返回元
             json_data = json.loads(javdb.main_us(file_number, appoint_url))
         else:
             json_data = json.loads(javdb.main(file_number, appoint_url, isuncensored))
-    elif mode == 6:  # 仅从avsox
-        json_data = json.loads(avsox.main(file_number, appoint_url))
+    # elif mode == 6:  # 仅从avsox
+    #     json_data = json.loads(avsox.main(file_number, appoint_url))
     elif mode == 7:  # 仅从xcity
         json_data = json.loads(xcity.main(file_number, appoint_url))
     elif mode == 8:  # 仅从dmm
